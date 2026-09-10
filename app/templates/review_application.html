@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Review Application - InternFlow</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+    <nav class="navbar">
+
+        <div class="logo">
+            InternFlow
+        </div>
+
+        <div class="nav-links">
+
+            <a href="{{ url_for('coordinator_dashboard') }}">
+                Dashboard
+            </a>
+
+            <a href="{{ url_for('logout') }}">
+                Logout
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <main class="dashboard-container">
+
+        <div class="dashboard-header">
+
+            <h1>Review Internship Application</h1>
+
+            <p>
+                Review the student's information and internship request.
+            </p>
+
+        </div>
+
+
+        <!-- Student Information -->
+
+        <div class="dashboard-card">
+
+            <h2>Student Information</h2>
+
+            <p>
+                <strong>Name:</strong>
+                {{ application["student_name"] }}
+            </p>
+
+            <p>
+                <strong>Email:</strong>
+                {{ application["student_email"] }}
+            </p>
+
+            <p>
+                <strong>Student ID:</strong>
+                {{ application["student_id"] }}
+            </p>
+
+            <p>
+                <strong>Department:</strong>
+                {{ application["department"] }}
+            </p>
+
+            <p>
+                <strong>Year:</strong>
+                {{ application["year"] }}
+            </p>
+
+            <p>
+                <strong>Phone:</strong>
+                {{ application["phone"] or "Not provided" }}
+            </p>
+
+        </div>
+
+
+        <!-- Internship Information -->
+
+        <div class="dashboard-card">
+
+            <h2>Internship Information</h2>
+
+            <p>
+                <strong>Company:</strong>
+                {{ application["company_name"] }}
+            </p>
+
+            <p>
+                <strong>Position:</strong>
+                {{ application["position"] }}
+            </p>
+
+            <p>
+                <strong>Start Date:</strong>
+                {{ application["start_date"] }}
+            </p>
+
+            <p>
+                <strong>End Date:</strong>
+                {{ application["end_date"] }}
+            </p>
+
+            <p>
+                <strong>Description:</strong>
+            </p>
+
+            <p>
+                {{ application["description"] }}
+            </p>
+
+            <p>
+                <strong>Current Status:</strong>
+                {{ application["status"]|capitalize }}
+            </p>
+
+        </div>
+
+
+        <!-- Decision -->
+
+        <div class="dashboard-card">
+
+            <h2>Coordinator Decision</h2>
+
+            <p>
+                Choose an action for this application.
+            </p>
+
+
+            <div class="action-buttons">
+
+                <form
+                    method="POST"
+                    action="{{ url_for('update_application_status', application_id=application['id']) }}"
+                >
+
+                    <input
+                        type="hidden"
+                        name="status"
+                        value="approved"
+                    >
+
+                    <button
+                        type="submit"
+                        class="approve-button"
+                    >
+                        Approve Application
+                    </button>
+
+                </form>
+
+
+                <form
+                    method="POST"
+                    action="{{ url_for('update_application_status', application_id=application['id']) }}"
+                >
+
+                    <input
+                        type="hidden"
+                        name="status"
+                        value="rejected"
+                    >
+
+                    <button
+                        type="submit"
+                        class="reject-button"
+                    >
+                        Reject Application
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+
+        <p>
+            <a href="{{ url_for('coordinator_dashboard') }}">
+                ← Back to Coordinator Dashboard
+            </a>
+        </p>
+
+    </main>
+
+</body>
+
+</html>

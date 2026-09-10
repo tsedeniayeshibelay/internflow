@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Coordinator Dashboard - InternFlow</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+    <nav class="navbar">
+
+        <div class="logo">
+            InternFlow
+        </div>
+
+        <div class="nav-links">
+
+            <a href="{{ url_for('coordinator_dashboard') }}">
+                Dashboard
+            </a>
+
+            <a href="{{ url_for('logout') }}">
+                Logout
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <main class="dashboard-container">
+
+        <div class="dashboard-header">
+
+            <h1>Coordinator Dashboard</h1>
+
+            <p>
+                Review and manage student internship applications.
+            </p>
+
+        </div>
+
+
+        <div class="dashboard-card">
+
+            <h2>Internship Applications</h2>
+
+            {% if applications %}
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Student</th>
+                                <th>Student ID</th>
+                                <th>Department</th>
+                                <th>Company</th>
+                                <th>Position</th>
+                                <th>Status</th>
+                                <th>Action</th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {% for application in applications %}
+
+                                <tr>
+
+                                    <td>
+                                        {{ application["student_name"] }}
+                                    </td>
+
+                                    <td>
+                                        {{ application["student_id"] }}
+                                    </td>
+
+                                    <td>
+                                        {{ application["department"] }}
+                                    </td>
+
+                                    <td>
+                                        {{ application["company_name"] }}
+                                    </td>
+
+                                    <td>
+                                        {{ application["position"] }}
+                                    </td>
+
+                                    <td>
+                                        {{ application["status"]|capitalize }}
+                                    </td>
+
+                                    <td>
+
+                                        <a
+    href="{{ url_for('review_application', application_id=application['id']) }}"
+    class="button small-button"
+>
+    Review
+</a>
+
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            {% else %}
+
+                <p>
+                    There are no internship applications yet.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+    </main>
+
+</body>
+
+</html>

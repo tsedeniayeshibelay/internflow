@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Apply for Internship - InternFlow</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+    <nav class="navbar">
+
+        <div class="logo">
+            InternFlow
+        </div>
+
+        <div class="nav-links">
+
+            <a href="{{ url_for('dashboard') }}">
+                Dashboard
+            </a>
+
+            <a href="{{ url_for('logout') }}">
+                Logout
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <div class="form-container">
+
+        <h1>Internship Application</h1>
+
+        <p>
+            Submit your internship application.
+        </p>
+
+
+        <form method="POST">
+
+
+            <label for="company_id">
+                Select Company
+            </label>
+
+            <select name="company_id"
+                    id="company_id"
+                    required>
+
+                <option value="">
+                    -- Select a company --
+                </option>
+
+                {% for company in companies %}
+
+                    <option value="{{ company['id'] }}">
+                        {{ company['name'] }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+
+            <label for="position">
+                Internship Position
+            </label>
+
+            <input
+                type="text"
+                id="position"
+                name="position"
+                placeholder="Example: Software Engineering Intern"
+                required
+            >
+
+
+            <label for="start_date">
+                Start Date
+            </label>
+
+            <input
+                type="date"
+                id="start_date"
+                name="start_date"
+                required
+            >
+
+
+            <label for="end_date">
+                End Date
+            </label>
+
+            <input
+                type="date"
+                id="end_date"
+                name="end_date"
+                required
+            >
+
+
+            <label for="description">
+                Why are you interested in this internship?
+            </label>
+
+            <textarea
+                id="description"
+                name="description"
+                rows="6"
+                placeholder="Describe your interest, skills, or goals..."
+                required
+            ></textarea>
+
+
+            <button type="submit">
+                Submit Application
+            </button>
+
+        </form>
+
+
+        <p>
+            <a href="{{ url_for('dashboard') }}">
+                ← Back to Dashboard
+            </a>
+        </p>
+
+    </div>
+
+</body>
+
+</html>

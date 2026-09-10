@@ -1,0 +1,6 @@
+venv/
+__pycache__/
+*.pyc
+internflow.db
+.env
+.vscode/

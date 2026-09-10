@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InternFlow</title>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="logo">InternFlow</div>
+
+        <div class="nav-links">
+            <a href="#">Home</a>
+            <a href="#">About</a>
+            <a href="#">Features</a>
+            <a href="{{ url_for('login') }}">Login</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+
+        <h1>Manage Your Internship Journey</h1>
+
+        <p>
+            InternFlow helps universities manage internship registration,
+            placement, supervision, progress reports, and final evaluation
+            in one platform.
+        </p>
+
+        <a href="{{ url_for('register') }}" class="button">
+    Get Started
+</a>
+
+    </section>
+
+</body>
+</html>

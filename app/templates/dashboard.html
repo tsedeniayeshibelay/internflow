@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Student Dashboard - InternFlow</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <nav class="navbar">
+
+        <div class="logo">
+            InternFlow
+        </div>
+
+        <div class="nav-links">
+
+            <a href="{{ url_for('dashboard') }}">
+                Dashboard
+            </a>
+
+            <a href="{{ url_for('logout') }}">
+                Logout
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <main class="dashboard-container">
+
+        <div class="dashboard-header">
+
+            <h1>
+                Welcome, {{ student["name"] }}! 👋
+            </h1>
+
+            <p>
+                Manage your internship journey from here.
+            </p>
+
+        </div>
+
+
+        <div class="dashboard-grid">
+
+
+            <!-- Student Information -->
+
+            <div class="dashboard-card">
+
+                <h2>Student Information</h2>
+
+                <p>
+                    <strong>Student ID:</strong>
+                    {{ student["student_id"] }}
+                </p>
+
+                <p>
+                    <strong>Email:</strong>
+                    {{ student["email"] }}
+                </p>
+
+                <p>
+                    <strong>Department:</strong>
+                    {{ student["department"] }}
+                </p>
+
+                <p>
+                    <strong>Year:</strong>
+                    {{ student["year"] }}
+                </p>
+
+                <p>
+                    <strong>Phone:</strong>
+                    {{ student["phone"] or "Not provided" }}
+                </p>
+
+            </div>
+
+
+            <!-- Internship Application -->
+
+            <div class="dashboard-card">
+
+    <h2>Internship Application</h2>
+
+    {% if application %}
+
+        <p>
+            <strong>Company:</strong>
+            {{ application["company_name"] }}
+        </p>
+
+        <p>
+            <strong>Position:</strong>
+            {{ application["position"] }}
+        </p>
+
+        <p>
+            <strong>Start Date:</strong>
+            {{ application["start_date"] }}
+        </p>
+
+        <p>
+            <strong>End Date:</strong>
+            {{ application["end_date"] }}
+        </p>
+
+        <p>
+            <strong>Status:</strong>
+            {{ application["status"]|capitalize }}
+        </p>
+
+        <p>
+            <strong>Submitted:</strong>
+            {{ application["created_at"] }}
+        </p>
+
+    {% else %}
+
+        <p>
+            You have not submitted an internship
+            application yet.
+        </p>
+
+        <a href="{{ url_for('apply_internship') }}"
+           class="button">
+
+            Apply for Internship
+
+        </a>
+
+    {% endif %}
+
+</div>
+
+
+        </div>
+
+    </main>
+
+</body>
+
+</html>

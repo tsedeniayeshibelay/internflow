@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Supervisor Dashboard - InternFlow</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+</head>
+
+<body>
+
+    <nav class="navbar">
+
+        <div class="logo">
+            InternFlow
+        </div>
+
+        <div class="nav-links">
+
+            <a href="{{ url_for('supervisor_dashboard') }}">
+                Dashboard
+            </a>
+
+            <a href="{{ url_for('logout') }}">
+                Logout
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <div class="dashboard-container">
+
+        <div class="dashboard-header">
+
+            <h1>
+                Supervisor Dashboard
+            </h1>
+
+            <p>
+                Welcome, {{ supervisor["name"] }}
+            </p>
+
+        </div>
+
+
+        <div class="dashboard-grid">
+
+            <div class="dashboard-card">
+
+                <h2>Supervisor Information</h2>
+
+                <p>
+                    <strong>Name:</strong>
+                    {{ supervisor["name"] }}
+                </p>
+
+                <p>
+                    <strong>Email:</strong>
+                    {{ supervisor["email"] }}
+                </p>
+
+                <p>
+                    <strong>Phone:</strong>
+                    {{ supervisor["phone"] or "Not provided" }}
+                </p>
+
+            </div>
+
+
+            <div class="dashboard-card">
+
+                <h2>Assigned Internships</h2>
+
+                {% if applications %}
+
+                    <p>
+                        You have
+                        <strong>{{ applications|length }}</strong>
+                        assigned internship(s).
+                    </p>
+
+                {% else %}
+
+                    <p>
+                        No internships have been assigned to you yet.
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        {% if applications %}
+
+        <div class="dashboard-card" style="margin-top: 25px;">
+
+            <h2>My Students</h2>
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>Student</th>
+                            <th>Student ID</th>
+                            <th>Company</th>
+                            <th>Position</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Status</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for application in applications %}
+
+                        <tr>
+
+                            <td>
+                                {{ application["student_name"] }}
+                            </td>
+
+                            <td>
+                                {{ application["student_id"] }}
+                            </td>
+
+                            <td>
+                                {{ application["company_name"] }}
+                            </td>
+
+                            <td>
+                                {{ application["position"] }}
+                            </td>
+
+                            <td>
+                                {{ application["start_date"] }}
+                            </td>
+
+                            <td>
+                                {{ application["end_date"] }}
+                            </td>
+
+                            <td>
+                                {{ application["status"]|capitalize }}
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+<div class="dashboard-card" style="margin-top: 25px;">
+
+    <h2>Progress Reports</h2>
+
+    {% if reports %}
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Student</th>
+                        <th>Report Title</th>
+                        <th>Company</th>
+                        <th>Submitted</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for report in reports %}
+
+                    <tr>
+
+                        <td>
+                            {{ report["student_name"] }}
+                        </td>
+
+                        <td>
+                            {{ report["title"] }}
+                        </td>
+
+                        <td>
+                            {{ report["company_name"] }}
+                        </td>
+
+                        <td>
+                            {{ report["submitted_at"] }}
+                        </td>
+
+                        <td>
+                            {{ report["status"]|capitalize }}
+                        </td>
+
+                        <td>
+
+    <a
+        href="{{ url_for('review_report', report_id=report['id']) }}"
+        class="button small-button"
+    >
+        View Report
+    </a>
+
+</td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    {% else %}
+
+        <p>
+            No progress reports have been submitted yet.
+        </p>
+
+    {% endif %}
+
+</div>
+
+    </div>
+
+</body>
+
+</html>

@@ -50,6 +50,91 @@
 
         </div>
 
+        <div
+    style="
+        margin-bottom: 25px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    "
+>
+
+    <a
+        href="{{ url_for('coordinator_dashboard') }}"
+        class="button small-button"
+    >
+        All
+    </a>
+
+    <a
+        href="{{ url_for('coordinator_dashboard', status='pending') }}"
+        class="button small-button"
+    >
+        Pending
+    </a>
+
+    <a
+        href="{{ url_for('coordinator_dashboard', status='approved') }}"
+        class="button small-button"
+    >
+        Approved
+    </a>
+
+    <a
+        href="{{ url_for('coordinator_dashboard', status='rejected') }}"
+        class="button small-button"
+    >
+        Rejected
+    </a>
+
+</div>
+
+        <div class="dashboard-grid">
+
+    <div class="dashboard-card">
+
+        <h2>Total Applications</h2>
+
+        <p style="font-size: 36px; font-weight: bold;">
+            {{ total_applications }}
+        </p>
+
+    </div>
+
+
+    <div class="dashboard-card">
+
+        <h2>Approved</h2>
+
+        <p style="font-size: 36px; font-weight: bold;">
+            {{ approved_applications }}
+        </p>
+
+    </div>
+
+
+    <div class="dashboard-card">
+
+        <h2>Pending</h2>
+
+        <p style="font-size: 36px; font-weight: bold;">
+            {{ pending_applications }}
+        </p>
+
+    </div>
+
+
+    <div class="dashboard-card">
+
+        <h2>Rejected</h2>
+
+        <p style="font-size: 36px; font-weight: bold;">
+            {{ rejected_applications }}
+        </p>
+
+    </div>
+
+</div>
 
         <div class="dashboard-card">
 
@@ -64,16 +149,15 @@
                         <thead>
 
                             <tr>
-
-                                <th>Student</th>
-                                <th>Student ID</th>
-                                <th>Department</th>
-                                <th>Company</th>
-                                <th>Position</th>
-                                <th>Status</th>
-                                <th>Action</th>
-
-                            </tr>
+    <th>Student</th>
+    <th>Student ID</th>
+    <th>Department</th>
+    <th>Company</th>
+    <th>Position</th>
+    <th>Supervisor</th>
+    <th>Status</th>
+    <th>Review</th>
+</tr>
 
                         </thead>
 
@@ -84,42 +168,44 @@
 
                                 <tr>
 
-                                    <td>
-                                        {{ application["student_name"] }}
-                                    </td>
+    <td>
+        {{ application["student_name"] }}
+    </td>
 
-                                    <td>
-                                        {{ application["student_id"] }}
-                                    </td>
+    <td>
+        {{ application["student_id"] }}
+    </td>
 
-                                    <td>
-                                        {{ application["department"] }}
-                                    </td>
+    <td>
+        {{ application["department"] }}
+    </td>
 
-                                    <td>
-                                        {{ application["company_name"] }}
-                                    </td>
+    <td>
+        {{ application["company_name"] }}
+    </td>
 
-                                    <td>
-                                        {{ application["position"] }}
-                                    </td>
+    <td>
+        {{ application["position"] }}
+    </td>
 
-                                    <td>
-                                        {{ application["status"]|capitalize }}
-                                    </td>
+    <td>
+        {{ application["supervisor_name"] or "Not assigned" }}
+    </td>
 
-                                    <td>
+    <td>
+        {{ application["status"]|capitalize }}
+    </td>
 
-                                        <a
-    href="{{ url_for('review_application', application_id=application['id']) }}"
-    class="button small-button"
->
-    Review
-</a>
+    <td>
+        <a
+            href="{{ url_for('review_application', application_id=application['id']) }}"
+            class="button small-button"
+        >
+            Review
+        </a>
+    </td>
 
-                                    </td>
-
-                                </tr>
+</tr>
 
                             {% endfor %}
 

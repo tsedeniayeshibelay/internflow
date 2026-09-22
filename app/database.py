@@ -59,6 +59,39 @@ def init_db():
             FOREIGN KEY (company_id) REFERENCES companies (id)
         )
     """)
+
+    connection.execute("""
+        CREATE TABLE IF NOT EXISTS supervisors (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER UNIQUE NOT NULL,
+            company_id INTEGER,
+            phone TEXT,
+            FOREIGN KEY (user_id) REFERENCES users (id),
+            FOREIGN KEY (company_id) REFERENCES companies (id)
+        )
+    """)
+
+    try:
+        connection.execute("""
+            ALTER TABLE applications
+            ADD COLUMN supervisor_id INTEGER
+        """)
+    except sqlite3.OperationalError:
+        pass
+    
+        connection.execute("""
+        CREATE TABLE IF NOT EXISTS progress_reports (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            application_id INTEGER NOT NULL,
+            title TEXT NOT NULL,
+            content TEXT NOT NULL,
+            submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            supervisor_feedback TEXT,
+            feedback_at TIMESTAMP,
+            status TEXT DEFAULT 'submitted',
+            FOREIGN KEY (application_id) REFERENCES applications (id)
+        )
+    """)
     
     connection.commit()
     connection.close()

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Review Progress Report - InternFlow</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+</head>
+
+
+<body>
+
+    <nav class="navbar">
+
+        <div class="logo">
+            InternFlow
+        </div>
+
+        <div class="nav-links">
+
+            <a href="{{ url_for('supervisor_dashboard') }}">
+                Dashboard
+            </a>
+
+            <a href="{{ url_for('logout') }}">
+                Logout
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <div class="form-container">
+
+        <h1>
+            Progress Report
+        </h1>
+
+
+        <p>
+            <strong>Student:</strong>
+            {{ report["student_name"] }}
+        </p>
+
+        <p>
+            <strong>Student ID:</strong>
+            {{ report["student_id"] }}
+        </p>
+
+        <p>
+            <strong>Company:</strong>
+            {{ report["company_name"] }}
+        </p>
+
+        <p>
+            <strong>Position:</strong>
+            {{ report["position"] }}
+        </p>
+
+        <p>
+            <strong>Submitted:</strong>
+            {{ report["submitted_at"] }}
+        </p>
+
+
+        <hr style="margin: 25px 0;">
+
+
+        <h2>
+            {{ report["title"] }}
+        </h2>
+
+
+        <p style="margin-top: 15px; line-height: 1.7;">
+            {{ report["content"] }}
+        </p>
+
+
+        <hr style="margin: 25px 0;">
+
+
+        <h2>
+            Supervisor Feedback
+        </h2>
+
+
+        {% if report["supervisor_feedback"] %}
+
+            <p style="margin-top: 15px; line-height: 1.7;">
+
+                {{ report["supervisor_feedback"] }}
+
+            </p>
+
+            <p style="margin-top: 15px; color: #6b7280;">
+
+                Feedback submitted:
+                {{ report["feedback_at"] }}
+
+            </p>
+
+        {% else %}
+
+            <form
+                method="POST"
+                style="margin-top: 20px;"
+            >
+
+                <label for="feedback">
+                    Feedback
+                </label>
+
+                <textarea
+                    id="feedback"
+                    name="feedback"
+                    rows="8"
+                    placeholder="Write feedback for the student..."
+                    required
+                ></textarea>
+
+
+                <button type="submit">
+                    Submit Feedback
+                </button>
+
+            </form>
+
+        {% endif %}
+
+    </div>
+
+</body>
+
+</html>

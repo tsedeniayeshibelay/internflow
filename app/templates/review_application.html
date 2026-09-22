@@ -1,203 +1,302 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+```
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
-    <title>Review Application - InternFlow</title>
+<title>Review Application - InternFlow</title>
 
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}">
+```
 
 </head>
 
 <body>
 
-    <nav class="navbar">
+```
+<nav class="navbar">
 
-        <div class="logo">
-            InternFlow
-        </div>
+    <div class="logo">
+        InternFlow
+    </div>
 
-        <div class="nav-links">
+    <div class="nav-links">
 
-            <a href="{{ url_for('coordinator_dashboard') }}">
-                Dashboard
-            </a>
+        <a href="{{ url_for('coordinator_dashboard') }}">
+            Dashboard
+        </a>
 
-            <a href="{{ url_for('logout') }}">
-                Logout
-            </a>
+        <a href="{{ url_for('logout') }}">
+            Logout
+        </a>
 
-        </div>
+    </div>
 
-    </nav>
-
-
-    <main class="dashboard-container">
-
-        <div class="dashboard-header">
-
-            <h1>Review Internship Application</h1>
-
-            <p>
-                Review the student's information and internship request.
-            </p>
-
-        </div>
+</nav>
 
 
-        <!-- Student Information -->
+<main class="dashboard-container">
 
-        <div class="dashboard-card">
+    <div class="dashboard-header">
 
-            <h2>Student Information</h2>
-
-            <p>
-                <strong>Name:</strong>
-                {{ application["student_name"] }}
-            </p>
-
-            <p>
-                <strong>Email:</strong>
-                {{ application["student_email"] }}
-            </p>
-
-            <p>
-                <strong>Student ID:</strong>
-                {{ application["student_id"] }}
-            </p>
-
-            <p>
-                <strong>Department:</strong>
-                {{ application["department"] }}
-            </p>
-
-            <p>
-                <strong>Year:</strong>
-                {{ application["year"] }}
-            </p>
-
-            <p>
-                <strong>Phone:</strong>
-                {{ application["phone"] or "Not provided" }}
-            </p>
-
-        </div>
-
-
-        <!-- Internship Information -->
-
-        <div class="dashboard-card">
-
-            <h2>Internship Information</h2>
-
-            <p>
-                <strong>Company:</strong>
-                {{ application["company_name"] }}
-            </p>
-
-            <p>
-                <strong>Position:</strong>
-                {{ application["position"] }}
-            </p>
-
-            <p>
-                <strong>Start Date:</strong>
-                {{ application["start_date"] }}
-            </p>
-
-            <p>
-                <strong>End Date:</strong>
-                {{ application["end_date"] }}
-            </p>
-
-            <p>
-                <strong>Description:</strong>
-            </p>
-
-            <p>
-                {{ application["description"] }}
-            </p>
-
-            <p>
-                <strong>Current Status:</strong>
-                {{ application["status"]|capitalize }}
-            </p>
-
-        </div>
-
-
-        <!-- Decision -->
-
-        <div class="dashboard-card">
-
-            <h2>Coordinator Decision</h2>
-
-            <p>
-                Choose an action for this application.
-            </p>
-
-
-            <div class="action-buttons">
-
-                <form
-                    method="POST"
-                    action="{{ url_for('update_application_status', application_id=application['id']) }}"
-                >
-
-                    <input
-                        type="hidden"
-                        name="status"
-                        value="approved"
-                    >
-
-                    <button
-                        type="submit"
-                        class="approve-button"
-                    >
-                        Approve Application
-                    </button>
-
-                </form>
-
-
-                <form
-                    method="POST"
-                    action="{{ url_for('update_application_status', application_id=application['id']) }}"
-                >
-
-                    <input
-                        type="hidden"
-                        name="status"
-                        value="rejected"
-                    >
-
-                    <button
-                        type="submit"
-                        class="reject-button"
-                    >
-                        Reject Application
-                    </button>
-
-                </form>
-
-            </div>
-
-        </div>
-
+        <h1>Review Internship Application</h1>
 
         <p>
-            <a href="{{ url_for('coordinator_dashboard') }}">
-                ← Back to Coordinator Dashboard
-            </a>
+            Review the student's information and internship request.
         </p>
 
-    </main>
+    </div>
+
+
+    <!-- Student Information -->
+
+    <div class="dashboard-card">
+
+        <h2>Student Information</h2>
+
+        <p>
+            <strong>Name:</strong>
+            {{ application["student_name"] }}
+        </p>
+
+        <p>
+            <strong>Email:</strong>
+            {{ application["student_email"] }}
+        </p>
+
+        <p>
+            <strong>Student ID:</strong>
+            {{ application["student_id"] }}
+        </p>
+
+        <p>
+            <strong>Department:</strong>
+            {{ application["department"] }}
+        </p>
+
+        <p>
+            <strong>Year:</strong>
+            {{ application["year"] }}
+        </p>
+
+        <p>
+            <strong>Phone:</strong>
+            {{ application["phone"] or "Not provided" }}
+        </p>
+
+    </div>
+
+
+    <!-- Internship Information -->
+
+    <div class="dashboard-card">
+
+        <h2>Internship Information</h2>
+
+        <p>
+            <strong>Company:</strong>
+            {{ application["company_name"] }}
+        </p>
+
+        <p>
+            <strong>Position:</strong>
+            {{ application["position"] }}
+        </p>
+
+        <p>
+            <strong>Start Date:</strong>
+            {{ application["start_date"] }}
+        </p>
+
+        <p>
+            <strong>End Date:</strong>
+            {{ application["end_date"] }}
+        </p>
+
+        <p>
+            <strong>Description:</strong>
+        </p>
+
+        <p>
+            {{ application["description"] }}
+        </p>
+
+        <p>
+            <strong>Current Status:</strong>
+            {{ application["status"]|capitalize }}
+        </p>
+
+    </div>
+
+
+    <!-- Decision -->
+
+    <div class="dashboard-card">
+
+        <h2>Coordinator Decision</h2>
+
+        <p>
+            Choose an action for this application.
+        </p>
+
+
+        <!-- Supervisor Assignment -->
+
+        <h2 style="margin-top: 30px;">
+            Supervisor Assignment
+        </h2>
+
+        <p style="margin-top: 15px;">
+
+            <strong>Current Supervisor:</strong>
+
+            {% if application["supervisor_name"] %}
+
+                {{ application["supervisor_name"] }}
+
+            {% else %}
+
+                Not assigned
+
+            {% endif %}
+
+        </p>
+
+
+        {% if application["status"] == "approved" %}
+
+            <form
+                method="POST"
+                action="{{ url_for('assign_supervisor', application_id=application['id']) }}"
+                style="margin-top: 20px;"
+            >
+
+                <label for="supervisor_id">
+                    Select Supervisor
+                </label>
+
+                <select
+                    name="supervisor_id"
+                    id="supervisor_id"
+                    required
+                >
+
+                    <option value="">
+                        -- Select Supervisor --
+                    </option>
+
+                    {% for supervisor in supervisors %}
+
+                        <option
+                            value="{{ supervisor['id'] }}"
+                            {% if application["supervisor_id"] == supervisor["id"] %}
+                                selected
+                            {% endif %}
+                        >
+
+                            {{ supervisor["name"] }}
+
+                            {% if supervisor["phone"] %}
+                                - {{ supervisor["phone"] }}
+                            {% endif %}
+
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+                <button
+                    type="submit"
+                    class="approve-button"
+                    style="margin-top: 15px;"
+                >
+                    Assign Supervisor
+                </button>
+
+            </form>
+
+        {% else %}
+
+            <p
+                style="
+                    margin-top: 15px;
+                    color: #6b7280;
+                "
+            >
+                The application must be approved before a supervisor
+                can be assigned.
+            </p>
+
+        {% endif %}
+
+
+        <!-- Approve / Reject -->
+
+        <div class="action-buttons">
+
+            <form
+                method="POST"
+                action="{{ url_for('update_application_status', application_id=application['id']) }}"
+            >
+
+                <input
+                    type="hidden"
+                    name="status"
+                    value="approved"
+                >
+
+                <button
+                    type="submit"
+                    class="approve-button"
+                >
+                    Approve Application
+                </button>
+
+            </form>
+
+
+            <form
+                method="POST"
+                action="{{ url_for('update_application_status', application_id=application['id']) }}"
+            >
+
+                <input
+                    type="hidden"
+                    name="status"
+                    value="rejected"
+                >
+
+                <button
+                    type="submit"
+                    class="reject-button"
+                >
+                    Reject Application
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <p>
+
+        <a href="{{ url_for('coordinator_dashboard') }}">
+            ← Back to Coordinator Dashboard
+        </a>
+
+    </p>
+
+</main>
+```
 
 </body>
 

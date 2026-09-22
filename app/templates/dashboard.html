@@ -124,6 +124,17 @@
             {{ application["created_at"] }}
         </p>
 
+        {% if application["status"] == "approved" %}
+
+    <a
+        href="{{ url_for('submit_report', application_id=application['id']) }}"
+        class="button"
+    >
+        Submit Progress Report
+    </a>
+
+{% endif %}
+
     {% else %}
 
         <p>
@@ -142,6 +153,121 @@
 
 </div>
 
+<div class="dashboard-card">
+
+    <h2>Progress Reports</h2>
+
+    {% if reports %}
+
+        {% for report in reports %}
+
+            <div
+                style="
+                    margin-bottom: 25px;
+                    padding-bottom: 20px;
+                    border-bottom: 1px solid #e5e7eb;
+                "
+            >
+
+                <h3>
+                    {{ report["title"] }}
+                </h3>
+
+                <p style="margin-top: 10px;">
+
+                    <strong>Submitted:</strong>
+
+                    {{ report["submitted_at"] }}
+
+                </p>
+
+
+                <p style="margin-top: 10px;">
+
+                    <strong>Status:</strong>
+
+                    {{ report["status"]|capitalize }}
+
+                </p>
+
+
+                <p
+                    style="
+                        margin-top: 15px;
+                        line-height: 1.6;
+                    "
+                >
+
+                    <strong>Your Report:</strong>
+
+                    {{ report["content"] }}
+
+                </p>
+
+
+                {% if report["supervisor_feedback"] %}
+
+                    <div
+                        style="
+                            margin-top: 20px;
+                            padding: 15px;
+                            background: #f5f7fb;
+                            border-radius: 8px;
+                        "
+                    >
+
+                        <strong>
+                            Supervisor Feedback:
+                        </strong>
+
+                        <p style="margin-top: 10px;">
+
+                            {{ report["supervisor_feedback"] }}
+
+                        </p>
+
+                        <p
+                            style="
+                                margin-top: 10px;
+                                color: #6b7280;
+                            "
+                        >
+
+                            Feedback submitted:
+
+                            {{ report["feedback_at"] }}
+
+                        </p>
+
+                    </div>
+
+                {% else %}
+
+                    <p
+                        style="
+                            margin-top: 15px;
+                            color: #6b7280;
+                        "
+                    >
+                        Your supervisor has not provided
+                        feedback yet.
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>
+            You have not submitted any progress reports yet.
+        </p>
+
+    {% endif %}
+
+</div>
 
         </div>
 

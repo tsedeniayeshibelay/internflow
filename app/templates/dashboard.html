@@ -133,6 +133,14 @@
         Submit Progress Report
     </a>
 
+    <a
+        href="{{ url_for('upload_document', application_id=application['id']) }}"
+        class="button"
+        style="margin-left: 10px;"
+    >
+        Upload Document
+    </a>
+
 {% endif %}
 
     {% else %}
@@ -148,6 +156,55 @@
             Apply for Internship
 
         </a>
+
+    {% endif %}
+
+</div>
+
+<div class="card">
+
+    <h2>
+        Uploaded Documents
+    </h2>
+
+    {% if documents %}
+
+        {% for document in documents %}
+
+            <div style="margin-top: 15px;">
+
+                <p>
+                    <strong>Type:</strong>
+                    {{ document["document_type"] }}
+                </p>
+
+                <p>
+                    <strong>File:</strong>
+                    {{ document["filename"] }}
+                </p>
+
+                <p>
+                    <strong>Uploaded:</strong>
+                    {{ document["uploaded_at"] }}
+                </p>
+
+                <a
+    href="{{ url_for('view_document', document_id=document['id']) }}"
+    class="button"
+    target="_blank"
+>
+    View Document
+</a>
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p style="color: #6b7280;">
+            No documents uploaded yet.
+        </p>
 
     {% endif %}
 

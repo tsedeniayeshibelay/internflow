@@ -1,8 +1,31 @@
-from flask import render_template, request, redirect, url_for, session
+from multiprocessing import connection
+import os
+import uuid
+from flask import render_template, request, redirect, url_for, session, send_from_directory
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 from app import app
 from app.database import get_db_connection
 
+UPLOAD_FOLDER = os.path.join(
+    os.path.dirname(os.path.dirname(__file__)),
+    "uploads"
+)
+
+ALLOWED_EXTENSIONS = {
+    "pdf",
+    "doc",
+    "docx"
+}
+
+def allowed_file(filename):
+
+    return (
+        "." in filename
+        and
+        filename.rsplit(".", 1)[1].lower()
+        in ALLOWED_EXTENSIONS
+    )
 
 @app.route("/")
 def home():
@@ -135,14 +158,29 @@ def dashboard():
             ORDER BY submitted_at DESC
         """, (application["id"],)).fetchall()
 
+    documents = []
+
+    if application:
+       documents = connection.execute("""
+            SELECT
+            id,
+            document_type,
+            filename,
+            uploaded_at
+            FROM documents
+            WHERE application_id = ?
+            ORDER BY uploaded_at DESC
+    """, (application["id"],)).fetchall()
+
     connection.close()
 
     return render_template(
-        "dashboard.html",
-        student=student,
-        application=application,
-        reports=reports
-    )
+    "dashboard.html",
+    student=student,
+    application=application,
+    reports=reports,
+    documents=documents
+)
 
 @app.route("/logout")
 def logout():
@@ -377,16 +415,28 @@ def review_application(application_id):
         ORDER BY users.name
     """).fetchall()
 
+    documents = connection.execute("""
+    SELECT
+        id,
+        document_type,
+        filename,
+        uploaded_at
+    FROM documents
+    WHERE application_id = ?
+    ORDER BY uploaded_at DESC
+""", (application_id,)).fetchall()
+
     connection.close()
 
     if not application:
         return "Application not found"
 
     return render_template(
-        "review_application.html",
-        application=application,
-        supervisors=supervisors
-    )
+    "review_application.html",
+    application=application,
+    supervisors=supervisors,
+    documents=documents
+)
 
 @app.route(
     "/coordinator/application/<int:application_id>/status",
@@ -701,3 +751,171 @@ def review_report(report_id):
         "review_report.html",
         report=report
     )
+
+@app.route(
+    "/student/application/<int:application_id>/documents",
+    methods=["GET", "POST"]
+)
+def upload_document(application_id):
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    if session["role"] != "student":
+        return redirect(url_for("dashboard"))
+
+    connection = get_db_connection()
+
+    application = connection.execute("""
+        SELECT
+            applications.*,
+            companies.name AS company_name
+        FROM applications
+        JOIN students
+            ON applications.student_id = students.id
+        JOIN companies
+            ON applications.company_id = companies.id
+        WHERE applications.id = ?
+        AND students.user_id = ?
+    """, (
+        application_id,
+        session["user_id"]
+    )).fetchone()
+
+    if not application:
+        connection.close()
+        return "Application not found"
+
+    if application["status"] != "approved":
+        connection.close()
+        return "You can only upload documents for approved applications"
+
+    if request.method == "POST":
+
+        document_type = request.form.get("document_type")
+
+        allowed_document_types = {
+                        "CV",
+                        "Request Letter",
+                        "Placement Letter",
+                        "Other"
+}
+
+        if document_type not in allowed_document_types:
+            connection.close()
+            return "Invalid document type"
+
+        if "file" not in request.files:
+            connection.close()
+            return "No file selected"
+
+        file = request.files["file"]
+
+        if file.filename == "":
+            connection.close()
+            return "No file selected"
+
+        if not allowed_file(file.filename):
+            connection.close()
+            return "Invalid file type. Only PDF, DOC, and DOCX files are allowed."
+
+        original_filename = secure_filename(file.filename)
+
+        unique_filename = (
+    str(uuid.uuid4())
+    + "_"
+    + original_filename
+)
+
+        file.save(
+    os.path.join(
+        UPLOAD_FOLDER,
+        unique_filename
+    )
+)
+
+        connection.execute("""
+            INSERT INTO documents
+            (application_id, document_type, filename)
+            VALUES (?, ?, ?)
+        """, (
+            application_id,
+            document_type,
+            unique_filename
+        ))
+
+        connection.commit()
+        connection.close()
+
+        return redirect(
+            url_for(
+                "dashboard"
+            )
+        )
+
+    connection.close()
+
+    return render_template(
+        "upload_document.html",
+        application=application
+    )
+
+@app.route("/student/document/<int:document_id>")
+def view_document(document_id):
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    if session["role"] not in ["student", "coordinator"]:
+        return redirect(url_for("dashboard"))
+
+    connection = get_db_connection()
+
+    document = connection.execute("""
+        SELECT
+            documents.filename,
+            applications.student_id
+        FROM documents
+        JOIN applications
+            ON documents.application_id = applications.id
+        WHERE documents.id = ?
+    """, (document_id,)).fetchone()
+
+    if not document:
+        connection.close()
+        return "Document not found"
+
+    if session["role"] == "student":
+
+        student = connection.execute("""
+            SELECT id
+            FROM students
+            WHERE user_id = ?
+        """, (session["user_id"],)).fetchone()
+
+        if not student or student["id"] != document["student_id"]:
+            connection.close()
+            return "You are not authorized to view this document"
+
+    connection.close()
+
+    return send_from_directory(
+        UPLOAD_FOLDER,
+        document["filename"]
+    )
+
+@app.errorhandler(413)
+def file_too_large(error):
+
+    return """
+        <h1>File Too Large</h1>
+        <p>
+            The uploaded file is too large.
+            Please upload a file smaller than 5 MB.
+        </p>
+        <p>
+            <a href="/dashboard">
+                ← Back to Dashboard
+            </a>
+        </p>
+    """, 413

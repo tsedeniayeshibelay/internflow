@@ -78,7 +78,7 @@ def init_db():
         """)
     except sqlite3.OperationalError:
         pass
-    
+
         connection.execute("""
         CREATE TABLE IF NOT EXISTS progress_reports (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -89,6 +89,17 @@ def init_db():
             supervisor_feedback TEXT,
             feedback_at TIMESTAMP,
             status TEXT DEFAULT 'submitted',
+            FOREIGN KEY (application_id) REFERENCES applications (id)
+        )
+    """)
+
+    connection.execute("""
+        CREATE TABLE IF NOT EXISTS documents (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            application_id INTEGER NOT NULL,
+            document_type TEXT NOT NULL,
+            filename TEXT NOT NULL,
+            uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (application_id) REFERENCES applications (id)
         )
     """)

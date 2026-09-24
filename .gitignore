@@ -4,3 +4,4 @@ __pycache__/
 internflow.db
 .env
 .vscode/
+uploads/

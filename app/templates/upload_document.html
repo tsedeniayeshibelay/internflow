@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Upload Document - InternFlow</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+    <nav class="navbar">
+
+        <div class="logo">
+            InternFlow
+        </div>
+
+        <div class="nav-links">
+
+            <a href="{{ url_for('dashboard') }}">
+                Dashboard
+            </a>
+
+            <a href="{{ url_for('logout') }}">
+                Logout
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <main class="form-container">
+
+        <h1>
+            Upload Internship Document
+        </h1>
+
+        <p>
+            Upload a document related to your internship application.
+        </p>
+
+
+        <p>
+            <strong>Company:</strong>
+            {{ application["company_name"] }}
+        </p>
+
+        <p>
+            <strong>Position:</strong>
+            {{ application["position"] }}
+        </p>
+
+
+        <form
+            method="POST"
+            enctype="multipart/form-data"
+        >
+
+            <label for="document_type">
+                Document Type
+            </label>
+
+            <select
+                name="document_type"
+                id="document_type"
+                required
+            >
+
+                <option value="">
+                    -- Select Document Type --
+                </option>
+
+                <option value="CV">
+                    CV
+                </option>
+
+                <option value="Request Letter">
+                    Request Letter
+                </option>
+
+                <option value="Placement Letter">
+                    Placement Letter
+                </option>
+
+                <option value="Other">
+                    Other
+                </option>
+
+            </select>
+
+
+            <label for="file">
+                Choose File
+            </label>
+
+            <input
+                type="file"
+                name="file"
+                id="file"
+                accept=".pdf,.doc,.docx"
+                required
+            >
+
+
+            <p style="color: #6b7280;">
+                Allowed file types: PDF, DOC, DOCX
+            </p>
+
+
+            <button type="submit">
+                Upload Document
+            </button>
+
+        </form>
+
+
+        <p style="margin-top: 20px;">
+
+            <a href="{{ url_for('dashboard') }}">
+                ← Back to Dashboard
+            </a>
+
+        </p>
+
+    </main>
+
+</body>
+
+</html>

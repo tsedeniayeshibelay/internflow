@@ -145,6 +145,61 @@
             Choose an action for this application.
         </p>
 
+        <h2 style="margin-top: 30px;">
+    Student Documents
+</h2>
+
+{% if documents %}
+
+    {% for document in documents %}
+
+        <div
+            style="
+                margin-top: 15px;
+                padding: 15px;
+                border: 1px solid #e5e7eb;
+                border-radius: 8px;
+            "
+        >
+
+            <p>
+                <strong>Document Type:</strong>
+                {{ document["document_type"] }}
+            </p>
+
+            <p>
+                <strong>File:</strong>
+                {{ document["filename"] }}
+            </p>
+
+            <p>
+                <strong>Uploaded:</strong>
+                {{ document["uploaded_at"] }}
+            </p>
+
+            <a
+                href="{{ url_for(
+                    'view_document',
+                    document_id=document['id']
+                ) }}"
+                class="button"
+                target="_blank"
+            >
+                View Document
+            </a>
+
+        </div>
+
+    {% endfor %}
+
+{% else %}
+
+    <p style="margin-top: 15px; color: #6b7280;">
+        No documents have been uploaded for this application.
+    </p>
+
+{% endif %}
+
 
         <!-- Supervisor Assignment -->
 

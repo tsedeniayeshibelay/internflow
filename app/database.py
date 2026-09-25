@@ -103,6 +103,23 @@ def init_db():
             FOREIGN KEY (application_id) REFERENCES applications (id)
         )
     """)
+
+    connection.execute("""
+    CREATE TABLE IF NOT EXISTS final_evaluations (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        application_id INTEGER NOT NULL,
+        supervisor_id INTEGER NOT NULL,
+        technical_skills INTEGER NOT NULL,
+        communication INTEGER NOT NULL,
+        teamwork INTEGER NOT NULL,
+        problem_solving INTEGER NOT NULL,
+        professionalism INTEGER NOT NULL,
+        overall_comments TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (application_id) REFERENCES applications (id),
+        FOREIGN KEY (supervisor_id) REFERENCES supervisors (id)
+    )
+""")
     
     connection.commit()
     connection.close()

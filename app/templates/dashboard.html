@@ -210,6 +210,62 @@
 
 </div>
 
+<div class="card">
+
+    <h2>
+        Final Internship Evaluation
+    </h2>
+
+    {% if evaluation %}
+
+        <p>
+            <strong>Technical Skills:</strong>
+            {{ evaluation["technical_skills"] }}/5
+        </p>
+
+        <p>
+            <strong>Communication:</strong>
+            {{ evaluation["communication"] }}/5
+        </p>
+
+        <p>
+            <strong>Teamwork:</strong>
+            {{ evaluation["teamwork"] }}/5
+        </p>
+
+        <p>
+            <strong>Problem Solving:</strong>
+            {{ evaluation["problem_solving"] }}/5
+        </p>
+
+        <p>
+            <strong>Professionalism:</strong>
+            {{ evaluation["professionalism"] }}/5
+        </p>
+
+        <p>
+            <strong>Overall Comments:</strong>
+        </p>
+
+        <p>
+            {{ evaluation["overall_comments"] }}
+        </p>
+
+        <p style="color: #6b7280;">
+            <strong>Evaluated:</strong>
+            {{ evaluation["created_at"] }}
+        </p>
+
+    {% else %}
+
+        <p style="color: #6b7280;">
+            Your final internship evaluation has not been submitted yet.
+        </p>
+
+    {% endif %}
+
+</div>
+
 <div class="dashboard-card">
 
     <h2>Progress Reports</h2>

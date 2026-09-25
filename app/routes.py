@@ -172,14 +172,29 @@ def dashboard():
             ORDER BY uploaded_at DESC
     """, (application["id"],)).fetchall()
 
-    connection.close()
+    evaluation = None
+
+    if application:
+        evaluation = connection.execute("""
+        SELECT
+            technical_skills,
+            communication,
+            teamwork,
+            problem_solving,
+            professionalism,
+            overall_comments,
+            created_at
+        FROM final_evaluations
+        WHERE application_id = ?
+    """, (application["id"],)).fetchone()
 
     return render_template(
     "dashboard.html",
     student=student,
     application=application,
     reports=reports,
-    documents=documents
+    documents=documents,
+    evaluation=evaluation
 )
 
 @app.route("/logout")
@@ -919,3 +934,149 @@ def file_too_large(error):
             </a>
         </p>
     """, 413
+
+@app.route(
+    "/supervisor/application/<int:application_id>/evaluation",
+    methods=["GET", "POST"]
+)
+def final_evaluation(application_id):
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    if session["role"] != "supervisor":
+        return redirect(url_for("dashboard"))
+
+    connection = get_db_connection()
+
+    supervisor = connection.execute("""
+        SELECT id
+        FROM supervisors
+        WHERE user_id = ?
+    """, (session["user_id"],)).fetchone()
+
+    if not supervisor:
+        connection.close()
+        return "Supervisor profile not found"
+
+    application = connection.execute("""
+        SELECT
+            applications.id,
+            applications.position,
+            companies.name AS company_name,
+            students.student_id,
+            users.name AS student_name
+        FROM applications
+        JOIN students
+            ON applications.student_id = students.id
+        JOIN users
+            ON students.user_id = users.id
+        JOIN companies
+            ON applications.company_id = companies.id
+        WHERE applications.id = ?
+        AND applications.supervisor_id = ?
+    """, (
+        application_id,
+        supervisor["id"]
+    )).fetchone()
+
+    if not application:
+        connection.close()
+        return "Application not found or not assigned to you"
+
+    if request.method == "POST":
+
+        try:
+            technical_skills = int(
+                request.form["technical_skills"]
+            )
+
+            communication = int(
+                request.form["communication"]
+            )
+
+            teamwork = int(
+                request.form["teamwork"]
+            )
+
+            problem_solving = int(
+                request.form["problem_solving"]
+            )
+
+            professionalism = int(
+                request.form["professionalism"]
+            )
+
+        except (KeyError, ValueError):
+            connection.close()
+            return "Invalid evaluation scores"
+
+        scores = [
+            technical_skills,
+            communication,
+            teamwork,
+            problem_solving,
+            professionalism
+        ]
+
+        if any(score < 1 or score > 5 for score in scores):
+            connection.close()
+            return "Scores must be between 1 and 5"
+
+        overall_comments = request.form.get(
+            "overall_comments",
+            ""
+        )
+
+        existing_evaluation = connection.execute("""
+            SELECT id
+            FROM final_evaluations
+            WHERE application_id = ?
+        """, (application_id,)).fetchone()
+
+        if existing_evaluation:
+            connection.close()
+            return "A final evaluation has already been submitted"
+
+        connection.execute("""
+            INSERT INTO final_evaluations (
+                application_id,
+                supervisor_id,
+                technical_skills,
+                communication,
+                teamwork,
+                problem_solving,
+                professionalism,
+                overall_comments
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            application_id,
+            supervisor["id"],
+            technical_skills,
+            communication,
+            teamwork,
+            problem_solving,
+            professionalism,
+            overall_comments
+        ))
+
+        connection.execute("""
+    UPDATE applications
+    SET status = 'completed'
+    WHERE id = ?
+""", (application_id,))
+
+        connection.commit()
+        connection.close()
+
+        return redirect(
+            url_for("supervisor_dashboard")
+        )
+
+    connection.close()
+
+    return render_template(
+        "final_evaluation.html",
+        application=application
+    )

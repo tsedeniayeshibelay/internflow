@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Final Evaluation - InternFlow</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+    <nav class="navbar">
+
+        <div class="logo">
+            InternFlow
+        </div>
+
+        <div class="nav-links">
+
+            <a href="{{ url_for('supervisor_dashboard') }}">
+                Dashboard
+            </a>
+
+            <a href="{{ url_for('logout') }}">
+                Logout
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <main class="form-container">
+
+        <h1>
+            Final Internship Evaluation
+        </h1>
+
+        <p>
+            Evaluate the student's internship performance.
+        </p>
+
+
+        <div style="margin-bottom: 25px;">
+
+            <p>
+                <strong>Student:</strong>
+                {{ application["student_name"] }}
+            </p>
+
+            <p>
+                <strong>Company:</strong>
+                {{ application["company_name"] }}
+            </p>
+
+            <p>
+                <strong>Position:</strong>
+                {{ application["position"] }}
+            </p>
+
+        </div>
+
+
+        <form method="POST">
+
+
+            <label for="technical_skills">
+                Technical Skills
+            </label>
+
+            <select
+                name="technical_skills"
+                id="technical_skills"
+                required
+            >
+
+                <option value="">
+                    -- Select Score --
+                </option>
+
+                <option value="1">1 - Needs significant improvement</option>
+                <option value="2">2 - Needs improvement</option>
+                <option value="3">3 - Satisfactory</option>
+                <option value="4">4 - Very good</option>
+                <option value="5">5 - Excellent</option>
+
+            </select>
+
+
+            <label for="communication">
+                Communication
+            </label>
+
+            <select
+                name="communication"
+                id="communication"
+                required
+            >
+
+                <option value="">
+                    -- Select Score --
+                </option>
+
+                <option value="1">1 - Needs significant improvement</option>
+                <option value="2">2 - Needs improvement</option>
+                <option value="3">3 - Satisfactory</option>
+                <option value="4">4 - Very good</option>
+                <option value="5">5 - Excellent</option>
+
+            </select>
+
+
+            <label for="teamwork">
+                Teamwork
+            </label>
+
+            <select
+                name="teamwork"
+                id="teamwork"
+                required
+            >
+
+                <option value="">
+                    -- Select Score --
+                </option>
+
+                <option value="1">1 - Needs significant improvement</option>
+                <option value="2">2 - Needs improvement</option>
+                <option value="3">3 - Satisfactory</option>
+                <option value="4">4 - Very good</option>
+                <option value="5">5 - Excellent</option>
+
+            </select>
+
+
+            <label for="problem_solving">
+                Problem Solving
+            </label>
+
+            <select
+                name="problem_solving"
+                id="problem_solving"
+                required
+            >
+
+                <option value="">
+                    -- Select Score --
+                </option>
+
+                <option value="1">1 - Needs significant improvement</option>
+                <option value="2">2 - Needs improvement</option>
+                <option value="3">3 - Satisfactory</option>
+                <option value="4">4 - Very good</option>
+                <option value="5">5 - Excellent</option>
+
+            </select>
+
+
+            <label for="professionalism">
+                Professionalism
+            </label>
+
+            <select
+                name="professionalism"
+                id="professionalism"
+                required
+            >
+
+                <option value="">
+                    -- Select Score --
+                </option>
+
+                <option value="1">1 - Needs significant improvement</option>
+                <option value="2">2 - Needs improvement</option>
+                <option value="3">3 - Satisfactory</option>
+                <option value="4">4 - Very good</option>
+                <option value="5">5 - Excellent</option>
+
+            </select>
+
+
+            <label for="overall_comments">
+                Overall Comments
+            </label>
+
+            <textarea
+                name="overall_comments"
+                id="overall_comments"
+                rows="6"
+                placeholder="Write your overall evaluation..."
+            ></textarea>
+
+
+            <button type="submit">
+                Submit Final Evaluation
+            </button>
+
+        </form>
+
+
+        <p style="margin-top: 20px;">
+
+            <a href="{{ url_for('supervisor_dashboard') }}">
+                ← Back to Dashboard
+            </a>
+
+        </p>
+
+    </main>
+
+</body>
+
+</html>

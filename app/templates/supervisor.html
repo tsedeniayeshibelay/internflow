@@ -113,14 +113,15 @@
                     <thead>
 
                         <tr>
-                            <th>Student</th>
-                            <th>Student ID</th>
-                            <th>Company</th>
-                            <th>Position</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th>Status</th>
-                        </tr>
+    <th>Student</th>
+    <th>Student ID</th>
+    <th>Company</th>
+    <th>Position</th>
+    <th>Start Date</th>
+    <th>End Date</th>
+    <th>Status</th>
+    <th>Action</th>
+</tr>
 
                     </thead>
 
@@ -157,6 +158,15 @@
                             <td>
                                 {{ application["status"]|capitalize }}
                             </td>
+
+                            <td>
+    <a
+        href="{{ url_for('final_evaluation', application_id=application['id']) }}"
+        class="button"
+    >
+        Final Evaluation
+    </a>
+</td>
 
                         </tr>
 

@@ -37,17 +37,54 @@ def register():
 
     if request.method == "POST":
 
-        name = request.form["name"]
-        email = request.form["email"]
-        password = request.form["password"]
-        student_id = request.form["student_id"]
-        department = request.form["department"]
-        year = request.form["year"]
-        phone = request.form["phone"]
+        name = request.form.get("name", "").strip()
+        email = request.form.get("email", "").strip()
+        password = request.form.get("password", "")
+        student_id = request.form.get("student_id", "").strip()
+        department = request.form.get("department", "").strip()
+        year = request.form.get("year", "").strip()
+        phone = request.form.get("phone", "").strip()
+
+        if not all([
+            name,
+            email,
+            password,
+            student_id,
+            department,
+            year,
+            phone
+]):
+            return "All registration fields are required."
+
+        if "@" not in email or "." not in email.split("@")[-1]:
+            return "Please enter a valid email address."
+
+        if len(password) < 8:
+            return "Password must be at least 8 characters long."
 
         hashed_password = generate_password_hash(password)
 
         connection = get_db_connection()
+
+        existing_user = connection.execute("""
+    SELECT id
+    FROM users
+    WHERE email = ?
+""", (email,)).fetchone()
+
+        if existing_user:
+           connection.close()
+           return "An account with this email already exists. Please use a different email."
+
+        existing_student = connection.execute("""
+    SELECT id
+    FROM students
+    WHERE student_id = ?
+""", (student_id,)).fetchone()
+
+        if existing_student:
+           connection.close()
+           return "An account with this student ID already exists. Please use a different student ID."
 
         cursor = connection.execute("""
             INSERT INTO users (name, email, password, role)
@@ -108,6 +145,9 @@ def login():
 def dashboard():
 
     if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    if session["role"] != "student":
         return redirect(url_for("login"))
 
     connection = get_db_connection()
@@ -208,6 +248,9 @@ def logout():
 def apply_internship():
 
     if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    if session["role"] != "student":
         return redirect(url_for("login"))
 
     if request.method == "POST":
@@ -465,18 +508,28 @@ def update_application_status(application_id):
     if session["role"] != "coordinator":
         return redirect(url_for("dashboard"))
 
-    status = request.form["status"]
+    status = request.form.get("status", "").strip()
 
     if status not in ["approved", "rejected"]:
         return "Invalid status"
 
     connection = get_db_connection()
 
+    application = connection.execute("""
+    SELECT id
+    FROM applications
+    WHERE id = ?
+""", (application_id,)).fetchone()
+
+    if not application:
+         connection.close()
+         return "Application not found", 404
+
     connection.execute("""
-        UPDATE applications
-        SET status = ?
-        WHERE id = ?
-    """, (status, application_id))
+    UPDATE applications
+    SET status = ?
+    WHERE id = ?
+""", (status, application_id))
 
     connection.commit()
     connection.close()
@@ -505,6 +558,10 @@ def supervisor_dashboard():
             ON users.id = supervisors.user_id
         WHERE users.id = ?
     """, (session["user_id"],)).fetchone()
+
+    if not supervisor:
+        connection.close()
+        return "Supervisor profile not found"
 
     applications = connection.execute("""
         SELECT
@@ -834,6 +891,16 @@ def upload_document(application_id):
             connection.close()
             return "Invalid file type. Only PDF, DOC, and DOCX files are allowed."
 
+        allowed_mime_types = {
+            "application/pdf",
+            "application/msword",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+}
+
+        if file.mimetype not in allowed_mime_types:
+            connection.close()
+            return "Invalid file content type. Only PDF, DOC, and DOCX files are allowed."
+
         original_filename = secure_filename(file.filename)
 
         unique_filename = (
@@ -934,6 +1001,11 @@ def file_too_large(error):
             </a>
         </p>
     """, 413
+
+@app.errorhandler(500)
+def internal_server_error(error):
+
+    return render_template("error.html"), 500
 
 @app.route(
     "/supervisor/application/<int:application_id>/evaluation",
@@ -1080,3 +1152,4 @@ def final_evaluation(application_id):
         "final_evaluation.html",
         application=application
     )
+
